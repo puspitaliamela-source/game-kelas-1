@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Petualangan Matematika Futuristik - SD Negeri 1 Remban</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Family Google -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Canvas Confetti for Celebration -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clay: {
+              purple: '#8B5CF6',
+              pink: '#EC4899',
+              blue: '#3B82F6',
+              yellow: '#F59E0B',
+              green: '#10B981',
+              cyan: '#06B6D4',
+              orange: '#F97316'
+            }
+          },
+          fontFamily: {
+            fredoka: ['"Fredoka One"', 'cursive'],
+            nunito: ['"Nunito"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #2E0854 0%, #180B30 50%, #0C061A 100%);
+      min-height: 100vh;
+      color: #fff;
+      user-select: none;
+      overflow-x: hidden;
+    }
+
+    /* Claymorphism 3D Effect Styles */
+    .clay-card {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      backdrop-filter: blur(16px);
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 28px;
+      box-shadow: 
+        0 15px 25px rgba(0, 0, 0, 0.4),
+        inset 0 4px 6px rgba(255, 255, 255, 0.4),
+        inset 0 -6px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .clay-btn {
+      position: relative;
+      border-radius: 20px;
+      font-family: 'Fredoka One', cursive;
+      letter-spacing: 0.5px;
+      transition: all 0.2s ease;
+      box-shadow: 
+        0 8px 0 rgba(0, 0, 0, 0.3),
+        inset 0 4px 4px rgba(255, 255, 255, 0.5),
+        inset 0 -4px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .clay-btn:active {
+      transform: translateY(6px);
+      box-shadow: 
+        0 2px 0 rgba(0, 0, 0, 0.3),
+        inset 0 2px 2px rgba(255, 255, 255, 0.5),
+        inset 0 -2px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .clay-btn-purple { background: linear-gradient(180deg, #A78BFA 0%, #7C3AED 100%); }
+    .clay-btn-pink { background: linear-gradient(180deg, #F472B6 0%, #DB2777 100%); }
+    .clay-btn-green { background: linear-gradient(180deg, #34D399 0%, #059669 100%); }
+    .clay-btn-yellow { background: linear-gradient(180deg, #FBBF24 0%, #D97706 100%); }
+    .clay-btn-cyan { background: linear-gradient(180deg, #22D3EE 0%, #0891B2 100%); }
+
+    /* Custom Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(2deg); }
+    }
+    .animate-float {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.6)); }
+      50% { filter: drop-shadow(0 0 25px rgba(236, 72, 153, 0.9)); }
+    }
+    .animate-glow {
+      animation: pulse-glow 3s infinite;
+    }
+
+    /* Clay Badge */
+    .clay-badge {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      border: 2px solid #FFF;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    /* Matching Game Line Drag UI */
+    .matching-box {
+      border: 3px dashed rgba(255, 255, 255, 0.4);
+      transition: all 0.3s;
+    }
+    .matching-box.selected {
+      border-color: #38BDF8;
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .matching-box.matched {
+      border-color: #4ADE80;
+      background: rgba(74, 222, 128, 0.25);
+    }
+
+    /* Custom Checkbox for Multi Select */
+    .clay-checkbox {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 3px solid #FFF;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .clay-checkbox-active {
+      background: #10B981;
+    }
+
+    /* Certificate Print Area */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #certificate-modal, #certificate-modal * {
+        visibility: visible;
+      }
+      #certificate-modal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: white !important;
+        color: black !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between p-2 md:p-6 relative">
+
+  <!-- Background Decorative Glowing Spheres -->
+  <div class="fixed top-10 left-10 w-32 h-32 bg-purple-600 rounded-full blur-3xl opacity-30 pointer-events-none"></div>
+  <div class="fixed bottom-10 right-10 w-48 h-48 bg-pink-600 rounded-full blur-3xl opacity-30 pointer-events-none"></div>
+  <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-600 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
+
+  <!-- HEADER NAV -->
+  <header class="w-full max-w-5xl mx-auto flex justify-between items-center z-10 py-2 px-4 clay-card mb-4">
+    <div class="flex items-center space-x-3">
+      <!-- Mascot Mini SVG -->
+      <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 to-yellow-400 flex items-center justify-center shadow-lg border-2 border-white animate-float">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="font-fredoka text-lg md:text-xl text-yellow-300 drop-shadow-md">ROBO-MATIKA 3D</h1>
+        <p class="text-xs text-purple-200 font-semibold">SD Negeri 1 Remban • Relasi & Fungsi</p>
+      </div>
+    </div>
+
+    <!-- Right Header Stats -->
+    <div id="header-stats" class="hidden flex items-center space-x-3 md:space-x-6">
+      <div class="bg-purple-900/60 px-3 py-1.5 rounded-xl border border-purple-400/30 flex items-center space-x-2">
+        <i class="fa-solid fa-user text-pink-400 text-sm"></i>
+        <span id="stat-student-name" class="font-bold text-xs md:text-sm text-white max-w-[100px] truncate">Siswa</span>
+      </div>
+      <div class="bg-yellow-900/60 px-3 py-1.5 rounded-xl border border-yellow-400/30 flex items-center space-x-2">
+        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+        <span id="stat-score" class="font-fredoka text-sm md:text-base text-yellow-300">0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="w-full max-w-4xl mx-auto flex-grow flex items-center justify-center z-10 py-2">
+
+    <!-- SCREEN 1: FORM IDENTITAS SISWA -->
+    <div id="screen-identity" class="w-full clay-card p-6 md:p-10 text-center relative overflow-hidden transition-all">
+      <div class="absolute -top-10 -right-10 w-40 h-40 bg-pink-500/20 rounded-full blur-xl"></div>
+      
+      <!-- Clay Mascot Display -->
+      <div class="w-28 h-28 mx-auto mb-4 relative">
+        <div class="w-full h-full bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 rounded-full flex items-center justify-center border-4 border-white shadow-2xl animate-float">
+          <!-- 3D-like Robot Face SVG -->
+          <svg class="w-16 h-16 text-yellow-300" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z"/>
+          </svg>
+        </div>
+        <span class="absolute bottom-0 right-0 bg-yellow-400 text-purple-900 font-bold text-xs px-2 py-0.5 rounded-full border border-white">
+          Robo Clay
+        </span>
+      </div>
+
+      <h2 class="font-fredoka text-2xl md:text-3xl text-yellow-300 mb-2">Selamat Datang Penjelajah Cilik!</h2>
+      <p class="text-purple-200 text-sm md:text-base mb-6">Petualangan Matematika Relasi & Fungsi - Kelas 1 SD Negeri 1 Remban</p>
+
+      <form id="form-student" onsubmit="startGame(event)" class="max-w-md mx-auto space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-bold text-purple-200 mb-1 ml-1 uppercase">Nama Lengkap Siswa</label>
+          <div class="relative">
+            <i class="fa-solid fa-user-astronaut absolute left-4 top-3.5 text-purple-400"></i>
+            <input type="text" id="student-name" required placeholder="Masukkan namamu..." 
+                   class="w-full pl-11 pr-4 py-3 bg-purple-950/60 border-2 border-purple-400/40 rounded-2xl text-white placeholder-purple-400/60 focus:outline-none focus:border-yellow-400 transition text-sm font-semibold">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-purple-200 mb-1 ml-1 uppercase">Pilih Kelas</label>
+          <div class="relative">
+            <i class="fa-solid fa-graduation-cap absolute left-4 top-3.5 text-purple-400"></i>
+            <select id="student-class" required 
+                    class="w-full pl-11 pr-4 py-3 bg-purple-950/80 border-2 border-purple-400/40 rounded-2xl text-white focus:outline-none focus:border-yellow-400 transition text-sm font-semibold appearance-none">
+              <option value="" disabled selected>Pilih kelas kamu...</option>
+              <option value="1-A">Kelas 1 - A</option>
+              <option value="1-B">Kelas 1 - B</option>
+              <option value="1-C">Kelas 1 - C</option>
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-purple-400 pointer-events-none text-xs"></i>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full clay-btn clay-btn-yellow py-3.5 text-purple-950 font-bold text-lg mt-6 flex items-center justify-center space-x-2">
+          <span>MULAI PETUALANGAN</span>
+          <i class="fa-solid fa-rocket"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- SCREEN 2: LEVEL SELECTOR -->
+    <div id="screen-levels" class="w-full clay-card p-6 md:p-8 hidden">
+      <div class="text-center mb-6">
+        <h2 class="font-fredoka text-2xl md:text-3xl text-yellow-300">Peta Misi Matematika</h2>
+        <p class="text-purple-200 text-xs md:text-sm">Selesaikan 5 Level Kuis HOTS untuk mendapatkan Sertifikat!</p>
+      </div>
+
+      <!-- Level Grid -->
+      <div id="level-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+        <!-- Level cards generated by JS -->
+      </div>
+
+      <div class="text-center">
+        <button onclick="showIdentityScreen()" class="clay-btn clay-btn-purple px-6 py-2.5 text-sm text-white inline-flex items-center space-x-2">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Ganti Profil</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: GAME / QUIZ AREA -->
+    <div id="screen-game" class="w-full clay-card p-5 md:p-8 hidden relative">
+      
+      <!-- Top Level Progress Header -->
+      <div class="flex justify-between items-center mb-6 border-b border-purple-500/30 pb-3">
+        <div class="flex items-center space-x-2">
+          <span id="quiz-level-badge" class="clay-badge px-3 py-1 rounded-full text-xs font-black text-purple-950 uppercase">
+            Level 1
+          </span>
+          <h3 id="quiz-type-title" class="font-fredoka text-sm md:text-base text-cyan-300">Pilihan Ganda</h3>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <span class="text-xs text-purple-300">Soal:</span>
+          <span id="quiz-progress" class="font-fredoka text-sm text-yellow-300">1 / 2</span>
+        </div>
+      </div>
+
+      <!-- Question Box -->
+      <div class="bg-purple-950/50 border border-purple-400/30 rounded-2xl p-4 md:p-6 mb-6">
+        <!-- Visual Helper / Context Graphic -->
+        <div id="quiz-visual" class="mb-4 flex justify-center items-center gap-3 flex-wrap min-h-[60px]">
+          <!-- Interactive or Animated Visuals injected by JS -->
+        </div>
+
+        <p id="quiz-question-text" class="text-base md:text-lg font-bold text-white text-center leading-relaxed">
+          Pertanyaan kuis akan ditampilkan di sini?
+        </p>
+      </div>
+
+      <!-- Question Interactive Options Container -->
+      <div id="quiz-options-container" class="mb-6">
+        <!-- Dynamic options (Single, Multi, Matching, True/False) injected here -->
+      </div>
+
+      <!-- Feedback Banner -->
+      <div id="quiz-feedback" class="hidden mb-4 p-3 rounded-xl text-center font-bold text-sm"></div>
+
+      <!-- Navigation / Submit Button Footer -->
+      <div class="flex justify-between items-center pt-2">
+        <button onclick="backToLevels()" class="clay-btn clay-btn-purple px-4 py-2 text-xs md:text-sm text-white">
+          <i class="fa-solid fa-map"></i> Peta Misi
+        </button>
+
+        <button id="btn-submit-answer" onclick="checkAnswer()" class="clay-btn clay-btn-green px-6 py-2.5 text-sm md:text-base text-white flex items-center space-x-2">
+          <span>JAWAB</span>
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- SCREEN 4: LEVEL COMPLETED MODAL / RESULTS -->
+    <div id="screen-level-complete" class="w-full clay-card p-8 text-center hidden">
+      <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-tr from-yellow-400 to-orange-500 rounded-full flex items-center justify-center border-4 border-white shadow-xl animate-bounce">
+        <i class="fa-solid fa-trophy text-3xl text-purple-950"></i>
+      </div>
+
+      <h2 class="font-fredoka text-2xl md:text-3xl text-yellow-300 mb-1">Hebat! Level Selesai!</h2>
+      <p id="level-complete-desc" class="text-purple-200 text-sm mb-6">Kamu berhasil menyelesaikan tantangan level ini!</p>
+
+      <div class="bg-purple-950/60 p-4 rounded-2xl max-w-xs mx-auto mb-6 border border-purple-400/30">
+        <div class="text-xs text-purple-300 uppercase font-bold mb-1">Nilai Level Ini</div>
+        <div id="level-complete-score" class="font-fredoka text-3xl text-yellow-300">100</div>
+      </div>
+
+      <div class="flex justify-center space-x-4">
+        <button onclick="backToLevels()" class="clay-btn clay-btn-purple px-6 py-3 text-sm text-white">
+          <i class="fa-solid fa-list"></i> Pilih Level
+        </button>
+        <button id="btn-next-level" onclick="nextLevel()" class="clay-btn clay-btn-yellow px-6 py-3 text-sm text-purple-950 font-bold">
+          Level Berikutnya <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER BRANDING -->
+  <footer class="w-full max-w-5xl mx-auto text-center py-3 text-xs text-purple-300/70 z-10">
+    SD Negeri 1 Remban • Media Pembelajaran Matematika Interaktif HOTS Kelas 1 SD
+  </footer>
+
+  <!-- MODAL SERTIFIKAT PENGHARGAAN (Dapat Dicetak) -->
+  <div id="certificate-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-2 hidden">
+    <div class="bg-white text-gray-800 rounded-3xl p-6 md:p-10 max-w-3xl w-full border-8 border-yellow-400 shadow-2xl relative overflow-hidden text-center">
+      
+      <!-- Ornamen Frame Sertifikat -->
+      <div class="absolute top-0 left-0 w-24 h-24 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-br-full opacity-30 pointer-events-none"></div>
+      <div class="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-yellow-400 to-amber-500 rounded-tl-full opacity-30 pointer-events-none"></div>
+
+      <!-- Close Button (No Print) -->
+      <button onclick="closeCertificate()" class="no-print absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl w-10 h-10 rounded-full flex items-center justify-center bg-gray-100">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- Certificate Header -->
+      <div class="mb-4">
+        <h4 class="text-sm font-bold tracking-widest text-purple-700 uppercase">SD NEGERI 1 REMBAN</h4>
+        <h2 class="font-fredoka text-2xl md:text-4xl text-amber-600 my-1">SERTIFIKAT PENGHARGAAN</h2>
+        <p class="text-xs md:text-sm text-gray-500 font-semibold">Petualangan Matematika Futuristik: Relasi & Fungsi</p>
+      </div>
+
+      <div class="w-24 h-1 bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-400 mx-auto mb-4 rounded-full"></div>
+
+      <p class="text-xs md:text-sm text-gray-600 mb-1">Diberikan kepada Penjelajah Cilik:</p>
+      <h3 id="cert-student-name" class="font-fredoka text-2xl md:text-3xl text-purple-900 mb-1 underline decoration-yellow-400">NAMA SISWA</h3>
+      <p id="cert-student-class" class="text-xs md:text-sm text-gray-600 font-bold mb-4">Kelas: 1-A</p>
+
+      <p class="text-xs md:text-sm text-gray-700 max-w-lg mx-auto mb-4 leading-relaxed">
+        Telah berhasil menyelesaikan seluruh tantangan kuis HOTS Matematika materi <b>Pasangan, Hubungan Pola, dan Pola Fungsi Sederhana</b> dengan hasil:
+      </p>
+
+      <!-- Predikat & Score Box -->
+      <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 max-w-xs mx-auto mb-6 shadow-inner">
+        <div class="text-xs text-amber-800 font-bold uppercase">Total Skor Akhir</div>
+        <div id="cert-total-score" class="font-fredoka text-3xl text-purple-900">95 / 100</div>
+        <div class="mt-1 inline-block px-3 py-1 rounded-full text-xs font-black bg-amber-400 text-purple-950 uppercase" id="cert-predicate">
+          AMAT BAIK
+        </div>
+      </div>
+
+      <!-- Signature Section -->
+      <div class="flex justify-between items-end mt-6 pt-4 border-t border-gray-200 text-xs">
+        <div class="text-left">
+          <p class="text-gray-500">Tanggal: <span id="cert-date">30 Oktober 2026</span></p>
+          <p class="font-bold text-purple-900">SD Negeri 1 Remban</p>
+        </div>
+        <div class="text-center">
+          <div class="w-20 h-10 border-b border-gray-400 mx-auto mb-1 flex items-end justify-center pb-1 italic font-serif text-purple-700">Guru Kelas</div>
+          <p class="font-bold text-gray-800">Tim Matematika SD 1 Remban</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons (No Print) -->
+      <div class="no-print mt-6 flex justify-center space-x-3">
+        <button onclick="window.print()" class="clay-btn clay-btn-green px-5 py-2.5 text-xs text-white flex items-center space-x-2">
+          <i class="fa-solid fa-print"></i>
+          <span>Cetak / Simpan PDF</span>
+        </button>
+        <button onclick="closeCertificate()" class="clay-btn clay-btn-purple px-5 py-2.5 text-xs text-white">
+          Tutup
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    /* ==========================================================================
+       1. GAME DATA & HOTS QUESTIONS (RELASI & FUNGSI KELAS 1 SD)
+       ========================================================================== */
+    
+    // Identitas Siswa
+    let studentData = {
+      name: '',
+      class: '',
+      score: 0
+    };
+
+    // Tracking Level
+    let currentLevelIndex = 0;
+    let currentQuestionIndex = 0;
+    let levelScores = [0, 0, 0, 0, 0];
+    let levelUnlocked = [true, false, false, false, false];
+
+    // Temporary User Selections for Multi-select & Matching
+    let selectedMultiAnswers = [];
+    let selectedMatchingPair = { left: null, right: null };
+    let matchingUserPairs = {};
+
+    /* 
+       5 LEVEL KUIS HOTS:
+       Level 1: Pilihan Ganda (Menemukan Pasangan Relasi Hewan & Makanan)
+       Level 2: Benar / Salah (Aturan Pasangan & Fungsi Ketersediaan)
+       Level 3: Menjodohkan (Mesin Ajaib / Fungsi Input-Output Sederhana)
+       Level 4: Pilihan Majemuk (Mengelompokkan Benda Sesuai Fungsi Pasangan)
+       Level 5: Pilihan Ganda HOTS Analisis (Detektif Pola Relasi Benda Futuristik)
+    */
+    const gameLevels = [
+      {
+        level: 1,
+        title: "Level 1: Pasangan Makanan Hewan",
+        type: "single", // Pilihan Ganda
+        typeName: "Pilihan Ganda",
+        questions: [
+          {
+            visual: `
+              <div class="flex items-center gap-3">
+                <span class="text-4xl animate-bounce">🐰</span>
+                <span class="text-xl text-yellow-300 font-bold">➡️ ?</span>
+              </div>
+            `,
+            question: "Kelinci Robo di planet mars ingin makan. Jika setiap hewan memiliki pasangan makanan favoritnya, manakah pasangan fungsi makanan yang TEPAT untuk Kelinci?",
+            options: [
+              { text: "🥕 Wortel Segar", correct: true },
+              { text: "🦴 Tulang Daging", correct: false },
+              { text: "🐟 Ikan Laut", correct: false }
+            ],
+            explanation: "Relasi makanan kelinci adalah wortel!"
+          },
+          {
+            visual: `
+              <div class="flex items-center gap-2 text-2xl">
+                <span>🐱 ➡️ 🐟</span> | <span>🐵 ➡️ 🍌</span> | <span>🐶 ➡️ ?</span>
+              </div>
+            `,
+            question: "Perhatikan pola pasangan! Kucing memasangkan Ikan, Monyet memasangkan Pisang. Anjing paling cocok dipasangkan dengan apa?",
+            options: [
+              { text: "🌿 Rumput Green", correct: false },
+              { text: "🦴 Tulang Lezat", correct: true },
+              { text: "🧀 Keju Kuning", correct: false }
+            ],
+            explanation: "Relasi kesukaan: Anjing berpasangan dengan tulang."
+          }
+        ]
+      },
+      {
+        level: 2,
+        title: "Level 2: Detektor Benar atau Salah",
+        type: "boolean", // Benar / Salah
+        typeName: "Benar / Salah",
+        questions: [
+          {
+            visual: `
+              <div class="flex items-center gap-3 text-3xl">
+                <span>👟 Sepatu</span> ➡️ <span>🦶 Kaki</span>
+              </div>
+            `,
+            question: "Apakah BENAR atau SALAH: Fungsi Sepatu dipasangkan khusus untuk dipakai di Kaki (Satu anak memakai sepatu di kaki)?",
+            options: [
+              { text: "BENAR", value: true },
+              { text: "SALAH", value: false }
+            ],
+            correct: true,
+            explanation: "Benar! Fungsi pasangan sepatu adalah untuk Kaki."
+          },
+          {
+            visual: `
+              <div class="flex items-center gap-2 text-3xl">
+                <span>🐟 Ikan</span> ➡️ <span>🌳 Pohon</span>
+              </div>
+            `,
+            question: "Anak robot menghubungkan tempat tinggal: 'Ikan dipasangkan tinggal di Atas Pohon'. Apakah pernyataan relasi ini BENAR?",
+            options: [
+              { text: "BENAR", value: true },
+              { text: "SALAH", value: false }
+            ],
+            correct: false,
+            explanation: "Salah! Tempat tinggal Ikan dipasangkan di dalam Air."
+          }
+        ]
+      },
+      {
+        level: 3,
+        title: "Level 3: Mesin Penjumlah Ajaib",
+        type: "matching", // Menjodohkan
+        typeName: "Menjodohkan (Melengkapi)",
+        questions: [
+          {
+            visual: `
+              <div class="bg-purple-900/80 px-4 py-2 rounded-xl text-yellow-300 font-bold text-xs">
+                ⚙️ Aturan Mesin Fungsi: [Angka Masuk + 2]
+              </div>
+            `,
+            question: "Jodohkan angka yang MASUK ke mesin dengan hasil KELUAR-nya setelah ditambah 2!",
+            pairs: [
+              { leftId: 'L1', leftText: 'Angka 1', rightId: 'R1', rightText: 'Hasil: 3' },
+              { leftId: 'L2', leftText: 'Angka 3', rightId: 'R2', rightText: 'Hasil: 5' },
+              { leftId: 'L3', leftText: 'Angka 5', rightId: 'R3', rightText: 'Hasil: 7' }
+            ]
+          }
+        ]
+      },
+      {
+        level: 4,
+        title: "Level 4: Kelompokkan Pasangan Benda",
+        type: "multi", // Pilihan Majemuk
+        typeName: "Pilihan Majemuk (Pilih Lebih Dari 1)",
+        questions: [
+          {
+            visual: `
+              <div class="text-3xl">✏️ 🎒 📘 👟</div>
+            `,
+            question: "Pilihlah DUA (2) benda di bawah ini yang memiliki relasi fungsi 'Peralatan Belajar di Sekolah'!",
+            options: [
+              { id: 'opt1', text: "✏️ Pensil Warna", correct: true },
+              { id: 'opt2', text: "⚽ Bola Sepak", correct: false },
+              { id: 'opt3', text: "📚 Buku Tulis", correct: true },
+              { id: 'opt4', text: "🍳 Wajan Masak", correct: false }
+            ],
+            requiredCount: 2
+          }
+        ]
+      },
+      {
+        level: 5,
+        title: "Level 5: Detektif Pola Futuristik HOTS",
+        type: "single", // HOTS Analysis
+        typeName: "Kuis HOTS Analisis",
+        questions: [
+          {
+            visual: `
+              <div class="flex items-center justify-center space-x-2 text-2xl font-bold bg-black/30 p-3 rounded-2xl border border-cyan-400">
+                <span class="text-cyan-300">🤖 Robot A (2 Baterai)</span> ➡️ <span>2 Jam Nyala</span>
+                <br>
+                <span class="text-pink-300">🤖 Robot B (4 Baterai)</span> ➡️ <span>4 Jam Nyala</span>
+              </div>
+            `,
+            question: "Jika Robot C memiliki 6 Baterai, berdasarkan relasi pola di atas, berapa jam Robot C dapat menyala?",
+            options: [
+              { text: "⚡ 5 Jam Nyala", correct: false },
+              { text: "⚡ 6 Jam Nyala", correct: true },
+              { text: "⚡ 10 Jam Nyala", correct: false }
+            ],
+            explanation: "Setiap 1 Baterai memberikan relasi 1 Jam Nyala. Jadi 6 Baterai = 6 Jam!"
+          },
+          {
+            visual: `
+              <div class="text-center font-bold text-yellow-300 text-sm">
+                Ibu menyiapkan 1 Piring Nasi untuk 1 Anak.
+              </div>
+            `,
+            question: "Jika ada 5 Anak Robot di meja makan, berapa jumlah Piring Nasi yang harus disiapkan agar setiap anak mendapat TEPAT 1 pasangan piring?",
+            options: [
+              { text: "🍽️ 3 Piring Nasi", correct: false },
+              { text: "🍽️ 5 Piring Nasi", correct: true },
+              { text: "🍽️ 10 Piring Nasi", correct: false }
+            ],
+            explanation: "Fungsi 1-ke-1: 5 Anak membutuhkan 5 Piring Nasi."
+          }
+        ]
+      }
+    ];
+
+    /* ==========================================================================
+       2. NAVIGATION & SCREEN CONTROLLERS
+       ========================================================================== */
+
+    function startGame(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('student-name').value.trim();
+      const classInput = document.getElementById('student-class').value;
+
+      if (!nameInput || !classInput) return;
+
+      studentData.name = nameInput;
+      studentData.class = classInput;
+
+      // Update Header Stats
+      document.getElementById('stat-student-name').innerText = studentData.name;
+      document.getElementById('header-stats').classList.remove('hidden');
+
+      // Switch to level screen
+      showScreen('screen-levels');
+      renderLevelGrid();
+    }
+
+    function showIdentityScreen() {
+      showScreen('screen-identity');
+      document.getElementById('header-stats').classList.add('hidden');
+    }
+
+    function showScreen(screenId) {
+      const screens = ['screen-identity', 'screen-levels', 'screen-game', 'screen-level-complete'];
+      screens.forEach(id => {
+        const el = document.getElementById(id);
+        if (id === screenId) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+    }
+
+    function renderLevelGrid() {
+      const grid = document.getElementById('level-grid');
+      grid.innerHTML = '';
+
+      gameLevels.forEach((lvl, idx) => {
+        const isUnlocked = levelUnlocked[idx];
+        const score = levelScores[idx];
+
+        const card = document.createElement('div');
+        card.className = `clay-card p-4 text-center flex flex-col justify-between relative overflow-hidden transition transform hover:-translate-y-1 ${
+          isUnlocked ? 'cursor-pointer' : 'opacity-60 cursor-not-allowed'
+        }`;
+
+        card.innerHTML = `
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs font-black px-2 py-0.5 rounded-full ${isUnlocked ? 'bg-yellow-400 text-purple-950' : 'bg-gray-600 text-gray-300'}">
+                LEVEL ${lvl.level}
+              </span>
+              ${isUnlocked ? `<span class="text-xs font-bold text-green-300"><i class="fa-solid fa-star"></i> ${score}/100</span>` : '<i class="fa-solid fa-lock text-purple-300"></i>'}
+            </div>
+            <h4 class="font-fredoka text-base text-white mb-1">${lvl.title}</h4>
+            <p class="text-xs text-purple-200">${lvl.typeName}</p>
+          </div>
+          <button class="mt-4 clay-btn ${isUnlocked ? 'clay-btn-yellow text-purple-950' : 'bg-gray-700 text-gray-400'} py-2 text-xs font-bold w-full"
+                  ${isUnlocked ? `onclick="loadLevel(${idx})"` : 'disabled'}>
+            ${isUnlocked ? (score > 0 ? 'MAIN LAGI' : 'MULAI') : 'TERKUNCI'}
+          </button>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    function backToLevels() {
+      showScreen('screen-levels');
+      renderLevelGrid();
+    }
+
+    /* ==========================================================================
+       3. QUIZ ENGINE LOGIC
+       ========================================================================== */
+
+    function loadLevel(levelIdx) {
+      currentLevelIndex = levelIdx;
+      currentQuestionIndex = 0;
+      showScreen('screen-game');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const level = gameLevels[currentLevelIndex];
+      const q = level.questions[currentQuestionIndex];
+
+      // Update Header Info
+      document.getElementById('quiz-level-badge').innerText = `LEVEL ${level.level}`;
+      document.getElementById('quiz-type-title').innerText = level.typeName;
+      document.getElementById('quiz-progress').innerText = `${currentQuestionIndex + 1} / ${level.questions.length}`;
+
+      // Reset Feedback
+      const feedback = document.getElementById('quiz-feedback');
+      feedback.className = 'hidden mb-4 p-3 rounded-xl text-center font-bold text-sm';
+      feedback.innerText = '';
+
+      // Visual & Question
+      document.getElementById('quiz-visual').innerHTML = q.visual || '';
+      document.getElementById('quiz-question-text').innerText = q.question;
+
+      // Render Options based on Type
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = '';
+
+      selectedMultiAnswers = [];
+      selectedMatchingPair = { left: null, right: null };
+      matchingUserPairs = {};
+
+      if (level.type === 'single') {
+        renderSingleChoice(q, container);
+      } else if (level.type === 'boolean') {
+        renderBooleanChoice(q, container);
+      } else if (level.type === 'matching') {
+        renderMatchingChoice(q, container);
+      } else if (level.type === 'multi') {
+        renderMultiChoice(q, container);
+      }
+    }
+
+    // Single Choice Renderer
+    function renderSingleChoice(q, container) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'grid grid-cols-1 sm:grid-cols-3 gap-3';
+
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-opt-btn clay-btn clay-btn-purple py-3 px-4 text-sm text-white font-bold text-left flex items-center justify-start space-x-2';
+        btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-purple-900 border border-white flex items-center justify-center text-xs">${String.fromCharCode(65 + i)}</span> <span>${opt.text}</span>`;
+        btn.onclick = () => {
+          document.querySelectorAll('.quiz-opt-btn').forEach(b => {
+            b.classList.remove('ring-4', 'ring-yellow-400', 'bg-purple-600');
+          });
+          btn.classList.add('ring-4', 'ring-yellow-400');
+          btn.dataset.selected = 'true';
+          btn.dataset.correct = opt.correct;
+        };
+        wrapper.appendChild(btn);
+      });
+
+      container.appendChild(wrapper);
+    }
+
+    // Boolean Choice Renderer
+    function renderBooleanChoice(q, container) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex justify-center space-x-4';
+
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        const isTrue = opt.value === true;
+        btn.className = `quiz-bool-btn clay-btn ${isTrue ? 'clay-btn-green' : 'clay-btn-pink'} py-4 px-8 text-base text-white font-black tracking-wider flex items-center space-x-2`;
+        btn.innerHTML = `<span>${opt.text}</span> <i class="fa-solid ${isTrue ? 'fa-check' : 'fa-xmark'}"></i>`;
+        btn.onclick = () => {
+          document.querySelectorAll('.quiz-bool-btn').forEach(b => b.classList.remove('ring-4', 'ring-yellow-300'));
+          btn.classList.add('ring-4', 'ring-yellow-300');
+          btn.dataset.selected = 'true';
+          btn.dataset.val = opt.value;
+        };
+        wrapper.appendChild(btn);
+      });
+
+      container.appendChild(wrapper);
+    }
+
+    // Matching Choice Renderer
+    function renderMatchingChoice(q, container) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'grid grid-cols-2 gap-4';
+
+      const leftCol = document.createElement('div');
+      leftCol.className = 'space-y-3';
+      const rightCol = document.createElement('div');
+      rightCol.className = 'space-y-3';
+
+      // Shuffle right items for puzzle element
+      const shuffledRight = [...q.pairs].sort(() => Math.random() - 0.5);
+
+      q.pairs.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'matching-box p-3 rounded-2xl bg-purple-900/50 text-center font-bold text-xs sm:text-sm cursor-pointer select-none';
+        item.innerText = p.leftText;
+        item.dataset.id = p.leftId;
+        item.onclick = () => selectMatchingItem('left', p.leftId, item);
+        leftCol.appendChild(item);
+      });
+
+      shuffledRight.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'matching-box p-3 rounded-2xl bg-purple-900/50 text-center font-bold text-xs sm:text-sm cursor-pointer select-none';
+        item.innerText = p.rightText;
+        item.dataset.id = p.rightId;
+        item.onclick = () => selectMatchingItem('right', p.rightId, item);
+        rightCol.appendChild(item);
+      });
+
+      wrapper.appendChild(leftCol);
+      wrapper.appendChild(rightCol);
+      container.appendChild(wrapper);
+
+      const instruction = document.createElement('p');
+      instruction.className = 'text-center text-xs text-yellow-300 mt-2 font-semibold';
+      instruction.innerText = '👉 Klik 1 item di kiri, lalu klik pasangannya di kanan!';
+      container.appendChild(instruction);
+    }
+
+    function selectMatchingItem(side, id, el) {
+      if (side === 'left') {
+        document.querySelectorAll('#quiz-options-container .matching-box').forEach(box => {
+          if (box.parentElement.previousElementSibling === null) box.classList.remove('selected');
+        });
+        selectedMatchingPair.left = id;
+        el.classList.add('selected');
+      } else {
+        document.querySelectorAll('#quiz-options-container .matching-box').forEach(box => {
+          if (box.parentElement.previousElementSibling !== null) box.classList.remove('selected');
+        });
+        selectedMatchingPair.right = id;
+        el.classList.add('selected');
+      }
+
+      // If both selected, pair them
+      if (selectedMatchingPair.left && selectedMatchingPair.right) {
+        matchingUserPairs[selectedMatchingPair.left] = selectedMatchingPair.right;
+        
+        // Visual indicator paired
+        const leftEl = document.querySelector(`[data-id="${selectedMatchingPair.left}"]`);
+        const rightEl = document.querySelector(`[data-id="${selectedMatchingPair.right}"]`);
+        
+        if (leftEl && rightEl) {
+          leftEl.classList.remove('selected');
+          rightEl.classList.remove('selected');
+          leftEl.classList.add('matched');
+          rightEl.classList.add('matched');
+        }
+
+        selectedMatchingPair = { left: null, right: null };
+      }
+    }
+
+    // Multi Choice Renderer
+    function renderMultiChoice(q, container) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'grid grid-cols-1 sm:grid-cols-2 gap-3';
+
+      q.options.forEach(opt => {
+        const btn = document.createElement('div');
+        btn.className = 'clay-btn clay-btn-purple p-3 text-sm text-white font-bold cursor-pointer flex items-center space-x-3';
+        btn.innerHTML = `
+          <div class="clay-checkbox" id="chk-${opt.id}">
+            <i class="fa-solid fa-check text-white text-xs hidden"></i>
+          </div>
+          <span>${opt.text}</span>
+        `;
+        btn.onclick = () => {
+          const chk = document.getElementById(`chk-${opt.id}`);
+          const icon = chk.querySelector('i');
+          
+          if (selectedMultiAnswers.includes(opt.id)) {
+            selectedMultiAnswers = selectedMultiAnswers.filter(id => id !== opt.id);
+            chk.classList.remove('clay-checkbox-active');
+            icon.classList.add('hidden');
+          } else {
+            selectedMultiAnswers.push(opt.id);
+            chk.classList.add('clay-checkbox-active');
+            icon.classList.remove('hidden');
+          }
+        };
+        wrapper.appendChild(btn);
+      });
+
+      container.appendChild(wrapper);
+    }
+
+    /* ==========================================================================
+       4. ANSWER CHECKING & SCORING
+       ========================================================================== */
+
+    function checkAnswer() {
+      const level = gameLevels[currentLevelIndex];
+      const q = level.questions[currentQuestionIndex];
+      const feedback = document.getElementById('quiz-feedback');
+
+      let isCorrect = false;
+
+      if (level.type === 'single') {
+        const selectedBtn = document.querySelector('.quiz-opt-btn[data-selected="true"]');
+        if (!selectedBtn) {
+          showFeedback(false, "Pilih salah satu jawaban terlebih dahulu!");
+          return;
+        }
+        isCorrect = (selectedBtn.dataset.correct === 'true');
+      } 
+      else if (level.type === 'boolean') {
+        const selectedBtn = document.querySelector('.quiz-bool-btn[data-selected="true"]');
+        if (!selectedBtn) {
+          showFeedback(false, "Pilih BENAR atau SALAH!");
+          return;
+        }
+        const val = selectedBtn.dataset.val === 'true';
+        isCorrect = (val === q.correct);
+      } 
+      else if (level.type === 'matching') {
+        // Check if all pairs mapped correctly (L1->R1, L2->R2, L3->R3)
+        let totalPairs = q.pairs.length;
+        let correctPairs = 0;
+        
+        q.pairs.forEach(p => {
+          if (matchingUserPairs[p.leftId] === p.rightId) {
+            correctPairs++;
+          }
+        });
+
+        if (Object.keys(matchingUserPairs).length < totalPairs) {
+          showFeedback(false, "Jodohkan semua pasangan angka di kiri dan kanan!");
+          return;
+        }
+
+        isCorrect = (correctPairs === totalPairs);
+      } 
+      else if (level.type === 'multi') {
+        if (selectedMultiAnswers.length === 0) {
+          showFeedback(false, "Pilih setidaknya jawaban yang menurutmu benar!");
+          return;
+        }
+
+        const correctIds = q.options.filter(o => o.correct).map(o => o.id);
+        const isMatch = selectedMultiAnswers.length === correctIds.length &&
+                        selectedMultiAnswers.every(id => correctIds.includes(id));
+        isCorrect = isMatch;
+      }
+
+      // Show Result Feedback
+      if (isCorrect) {
+        showFeedback(true, "🎉 Luar Biasa! Jawabanmu TEPAT SEKALI!");
+        confetti({ particleCount: 40, spread: 60, origin: { y: 0.8 } });
+      } else {
+        showFeedback(false, `❌ Kurang tepat! ${q.explanation || 'Yuk coba konsentrasi lagi!'}`);
+      }
+
+      // Proceed after delay
+      setTimeout(() => {
+        if (isCorrect) {
+          // Increment Level Points
+          const pointsPerQ = 100 / level.questions.length;
+          levelScores[currentLevelIndex] += pointsPerQ;
+        }
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < level.questions.length) {
+          renderQuestion();
+        } else {
+          finishLevel();
+        }
+      }, 1800);
+    }
+
+    function showFeedback(isSuccess, message) {
+      const feedback = document.getElementById('quiz-feedback');
+      feedback.classList.remove('hidden', 'bg-green-500/30', 'text-green-200', 'bg-red-500/30', 'text-red-200');
+      
+      if (isSuccess) {
+        feedback.classList.add('bg-green-500/30', 'text-green-200', 'border', 'border-green-400');
+      } else {
+        feedback.classList.add('bg-red-500/30', 'text-red-200', 'border', 'border-red-400');
+      }
+      feedback.innerText = message;
+    }
+
+    function finishLevel() {
+      // Unlock Next Level
+      if (currentLevelIndex + 1 < gameLevels.length) {
+        levelUnlocked[currentLevelIndex + 1] = true;
+      }
+
+      // Update Total Score
+      const totalScoreSum = levelScores.reduce((a, b) => a + b, 0) / gameLevels.length;
+      studentData.score = Math.round(totalScoreSum);
+      document.getElementById('stat-score').innerText = studentData.score;
+
+      // Check if ALL levels completed
+      const allDone = levelUnlocked.every((u, i) => u && levelScores[i] > 0) || (currentLevelIndex === gameLevels.length - 1);
+
+      if (allDone) {
+        showCertificateModal();
+      } else {
+        // Show Level Complete Screen
+        document.getElementById('level-complete-score').innerText = `${Math.round(levelScores[currentLevelIndex])} / 100`;
+        showScreen('screen-level-complete');
+      }
+    }
+
+    function nextLevel() {
+      if (currentLevelIndex + 1 < gameLevels.length) {
+        loadLevel(currentLevelIndex + 1);
+      } else {
+        showCertificateModal();
+      }
+    }
+
+    /* ==========================================================================
+       5. CERTIFICATE GENERATOR
+       ========================================================================== */
+
+    function showCertificateModal() {
+      const totalScore = studentData.score;
+      let predicate = "CUKUP";
+      let badgeBg = "bg-blue-400 text-purple-950";
+
+      if (totalScore >= 85) {
+        predicate = "AMAT BAIK";
+        badgeBg = "bg-amber-400 text-purple-950";
+      } else if (totalScore >= 70) {
+        predicate = "BAIK";
+        badgeBg = "bg-green-400 text-purple-950";
+      }
+
+      document.getElementById('cert-student-name').innerText = studentData.name.toUpperCase();
+      document.getElementById('cert-student-class').innerText = `Kelas: ${studentData.class}`;
+      document.getElementById('cert-total-score').innerText = `${totalScore} / 100`;
+      
+      const predEl = document.getElementById('cert-predicate');
+      predEl.innerText = predicate;
+      predEl.className = `mt-1 inline-block px-4 py-1 rounded-full text-xs font-black uppercase ${badgeBg}`;
+
+      // Date
+      const today = new Date();
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('cert-date').innerText = today.toLocaleDateString('id-ID', options);
+
+      // Trigger Celebration Effects
+      confetti({ particleCount: 100, spread: 100, origin: { y: 0.5 } });
+
+      document.getElementById('certificate-modal').classList.remove('hidden');
+    }
+
+    function closeCertificate() {
+      document.getElementById('certificate-modal').classList.add('hidden');
+      showScreen('screen-levels');
+      renderLevelGrid();
+    }
+
+    // Initialize UI on load
+    window.onload = function() {
+      showIdentityScreen();
+    };
+  </script>
+</body>
+</html>
